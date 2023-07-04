@@ -1,6 +1,14 @@
-let correctWord = ''
+let current_row_index = 0
+let current_col_index = 0
+let correctWord = 'tests'
 
 populateTable()
+
+document.addEventListener('keydown', (event) => {
+    input(event.key)
+})
+
+
 
 async function populateTable() {
     // try {
@@ -24,5 +32,35 @@ async function populateTable() {
             line.append(tile)
         }
         document.getElementById('rootGrid').append(line)
+    }
+}
+
+// Function for Entering values
+function input(param) {
+    let key = param                //Letters Key Value
+
+    let current_row = document.querySelectorAll('.letter-Box-container')[current_row_index]
+
+    if (key.length == 1 && key.match(/[a-z]{1}|[A-Z]{1}/) && current_col_index < 5) {
+        current_row.children[current_col_index].animate({ scale: "1.2" }, { duration: 100 })
+        current_row.children[current_col_index].firstChild.textContent = key;
+        current_col_index++;
+    }
+    else if (key.match('Enter') && current_col_index == 5) {
+        console.log("answer submitted")
+        let my_word = []
+        for (let i = 0; i < 5; i++) {
+            my_word.push(current_row.children[i].firstChild.textContent)
+        }
+        my_word = my_word.join('').toUpperCase()
+        console.log(my_word)
+        // Func to check answer if correct 
+        current_row_index++
+        current_col_index = 0;
+    }
+    else if ((key.match('Backspace') || key.match('Delete')) && current_col_index > 0) {
+        current_row.children[current_col_index - 1].animate({ scale: "1.05" }, { duration: 100 })
+        current_row.children[current_col_index - 1].firstChild.textContent = '';
+        current_col_index--;
     }
 }
