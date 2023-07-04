@@ -54,7 +54,7 @@ function input(param) {
         }
         my_word = my_word.join('').toUpperCase()
         console.log(my_word)
-        // Func to check answer if correct 
+        checkAnswer(my_word, current_row)
         current_row_index++
         current_col_index = 0;
     }
@@ -62,5 +62,28 @@ function input(param) {
         current_row.children[current_col_index - 1].animate({ scale: "1.05" }, { duration: 100 })
         current_row.children[current_col_index - 1].firstChild.textContent = '';
         current_col_index--;
+    }
+}
+
+//Func to check answer
+// Checks answer on Enter press 
+function checkAnswer(my_word, row) {
+    setAnimationTimeout(row, my_word, correctWord, 0)
+}
+
+// Loop with Delay
+function setAnimationTimeout(row, my_word, correctWord, i) {
+    if (i < 5) {
+        setTimeout(() => {
+            if (row.children[i].firstChild.textContent.toUpperCase() == correctWord[i].toUpperCase()) {
+                row.children[i].classList.add('correct')
+                console.log("first")
+            } else if (correctWord.toUpperCase().match(row.children[i].firstChild.textContent.toUpperCase())) {
+                row.children[i].classList.add('almost')
+            } else {
+                row.children[i].classList.add('wrong')
+            }
+            setAnimationTimeout(row, my_word, correctWord, i + 1)
+        }, 700);
     }
 }

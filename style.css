@@ -52,3 +52,22 @@ h1{
     height: 100%;
     font-family: 'Belanosima',sans-serif;
 }
+
+.correct{
+    background-color: var(--green);
+    animation: animated-Flip-Tile 500ms cubic-bezier(.97,.35,.09,.55) forwards ;
+}
+.almost{
+    background-color: var(--yellow);
+    animation: animated-Flip-Tile 500ms cubic-bezier(.97,.35,.09,.55) forwards ;
+}
+.wrong{
+    background-color: var(--dark);
+    animation: animated-Flip-Tile 500ms cubic-bezier(.97,.35,.09,.55) forwards ;
+}
+
+@keyframes animated-Flip-Tile{
+    0%,70%{background-color:transparent}
+    70%{opacity:.5}
+    100%{border-color:transparent;transform:rotate3d(380,1 ,1 ,360deg)}
+}
