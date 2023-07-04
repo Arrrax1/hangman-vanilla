@@ -68,6 +68,7 @@ function input(param) {
 //Func to check answer
 // Checks answer on Enter press 
 function checkAnswer(my_word, row) {
+    // idk why I called a function just to call another function inside 
     setAnimationTimeout(row, my_word, correctWord, 0)
 }
 
@@ -86,4 +87,28 @@ function setAnimationTimeout(row, my_word, correctWord, i) {
             setAnimationTimeout(row, my_word, correctWord, i + 1)
         }, 700);
     }
+    // check if the entire word is correct
+    if (i == 5) {
+        if (correctWord.toUpperCase() == my_word.toUpperCase()) {
+            // if the entire word matches then animate all letters
+            setTimeout(() => {
+                correctAnswerAnimation(row, 0)
+            }, 400);
+        }
+    }
 }
+
+function correctAnswerAnimation(row, i) {
+    // recursion again to animate all letters
+    if (i < 5) {
+        setTimeout(() => {
+            row.children[i].animate({ scale: "1.3" }, { duration: 200, easing: "ease" })
+            correctAnswerAnimation(row, i + 1)
+        }, 100);
+    }
+}
+
+
+// TODO: Add boolean check, inPlay=false if clicked enter and if the answer is correct
+// inPlay=true after clicked enter and checked validity and the answer is wrong or new game
+// TODO: check if word in dictionary
