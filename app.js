@@ -73,9 +73,9 @@ function checkAnswer(my_word, row) {
     // idk why I called a function just to call another function inside 
     setAnimationTimeout(row, my_word, correctWord, 0)
 }
-let correctL=[]
-let almostL=[]
-let wrongL=[]
+let correctL = []
+let almostL = []
+let wrongL = []
 // Loop with Delay
 function setAnimationTimeout(row, my_word, correctWord, i) {
     if (i < 5) {
@@ -100,10 +100,12 @@ function setAnimationTimeout(row, my_word, correctWord, i) {
             setTimeout(() => {
                 correctAnswerAnimation(row, 0)
             }, 400);
+        } else {
+            hangAnimate(current_row_index)
         }
         // written with a timeout so it waits for the last letter to finish animation
         setTimeout(() => {
-            styleKeys(correctL,almostL,wrongL)
+            styleKeys(correctL, almostL, wrongL)
         }, 700);
     }
 }
@@ -116,6 +118,7 @@ function correctAnswerAnimation(row, i) {
             correctAnswerAnimation(row, i + 1)
         }, 100);
     }
+    if(i==5) saveAnimate()
 }
 
 // Create Keyboard
@@ -148,7 +151,7 @@ function eventListenerKeys() {
     });
 }
 
-function styleKeys(correctLetters,almostLetters,wrongLetters){
+function styleKeys(correctLetters, almostLetters, wrongLetters) {
     document.querySelectorAll('.keyboard-key').forEach(element => {
         let key = element.textContent
         let currentColor = getComputedStyle(element).backgroundColor
@@ -157,18 +160,57 @@ function styleKeys(correctLetters,almostLetters,wrongLetters){
             element.style.backgroundColor = '#252525'
             element.style.color = 'white'
         }
-        if (almostL.includes(key) && currentColor=='rgb(245, 245, 245)'){
+        if (almostL.includes(key) && currentColor == 'rgb(245, 245, 245)') {
             element.style.backgroundColor = '#b59f3b'
             element.style.color = 'white'
         }
-        if (correctL.includes(key)){
+        if (correctL.includes(key)) {
             element.style.backgroundColor = '#538d4e'
             element.style.color = 'white'
         }
     });
-    correctL=[]
-    almostL=[]
-    wrongL=[]
+    correctL = []
+    almostL = []
+    wrongL = []
+}
+
+
+// Hangin Man Animation
+function hangAnimate(part) {
+    switch (part) {
+        case 1:
+            document.querySelector('.base').style.opacity=1
+            break;
+        case 2:
+            document.querySelector('.pole').style.opacity=1
+            break;
+        case 3:
+            document.querySelector('.rope').style.opacity=1
+            break;
+        case 4:
+            document.querySelector('.chair').style.opacity=1
+            break;
+        case 5:
+            document.querySelector('.man').style.opacity=1
+            break;
+        case 6:
+            document.querySelector('.chair').style.opacity=0
+            document.querySelector('#stickman').classList.add('deadMan')
+            break;
+
+        default:
+            break;
+    }
+}
+
+function saveAnimate() {
+    document.querySelector('.base').style.opacity=1
+    document.querySelector('.pole').style.opacity=1
+    document.querySelector('.rope').style.opacity=0
+    document.querySelector('.chair').style.opacity=1
+    document.querySelector('.man').style.opacity=1
+    document.querySelector('#stickman').src='saved.svg'
+    document.querySelector('#stickman').classList.add('savedMan')
 }
 
 // TODO: Add boolean check, inPlay=false if clicked enter and if the answer is correct

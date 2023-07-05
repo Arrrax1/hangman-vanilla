@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,19 +8,35 @@
     <link rel="stylesheet" href="style.css">
     <title>Save-a-Man</title>
 </head>
+
 <body>
     <div class="topBar">
         <h1>Save-a-Man</h1>
         <button class="newGame"><i class="fa-solid fa-play"></i>&nbsp; New Game</button>
     </div>
-    
-    <div class="grid-container" id="rootGrid">
-
-    </div>
+    <section>
+        <div class="grid-container" id="rootGrid">
+        </div>
+        <div class="manContainer">
+            <div class="base">
+                <div class="pole">
+                    <div class="rope">
+                    </div>
+                    <div class="man">
+                        <img id="stickman" src="dead.svg" alt="" width="100%">
+                        <!-- <img class="deadMan" src="da-23-stickman-figure-cartoon-sad.svg" alt="" width="100%"> -->
+                        <!-- <img class="savedMan" src="53-29-walk-stick-figure-stickman.svg" alt="" width="100%"> -->
+                    </div>
+                    <div class="chair"></div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <div id="keyboard">
 
     </div>
     <script src="app.js"></script>
 </body>
+
 </html>
