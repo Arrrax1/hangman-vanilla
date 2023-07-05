@@ -3,6 +3,8 @@ let current_col_index = 0
 let correctWord = 'tests'
 
 populateTable()
+populateKeyboard()
+initKeys()
 
 document.addEventListener('keydown', (event) => {
     input(event.key)
@@ -108,7 +110,38 @@ function correctAnswerAnimation(row, i) {
     }
 }
 
+// Create Keyboard
+function populateKeyboard() {
+    let keyboard = document.getElementById("keyboard")
+    let keys = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'Enter', 'z', 'x', 'c', 'v', 'b', 'n', 'm', 'Delete'];
+
+    for (let i = 0; i < 3; i++) {
+        let row = document.createElement("div")
+        row.classList.add('keyboard-row')
+        let x = 0
+        i == 0 ? x = 10 : x = 9
+        console.log(x)
+        for (let j = 0; j < x; j++) {
+            let key = document.createElement("div")
+            key.textContent = keys.shift()
+            key.classList.add('keyboard-key')
+            row.append(key)
+        }
+        keyboard.append(row)
+    }
+}
+
+// Virtual Keyboard Keys
+function initKeys() {
+    document.querySelectorAll('.keyboard-key').forEach(element => {
+        element.addEventListener('click', () => {
+            input(element.textContent)
+        })
+    });
+}
 
 // TODO: Add boolean check, inPlay=false if clicked enter and if the answer is correct
 // inPlay=true after clicked enter and checked validity and the answer is wrong or new game
 // TODO: check if word in dictionary
+// TODO: Add Virtual Keyboard
+// TODO: Keyboard Highlight colors on keyboard

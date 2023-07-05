@@ -7,21 +7,47 @@
     --background:#333;
 }
 
-*{
+body{
     font-family: 'McLaren', sans-serif ;
     color: white;
     background-color: #333;
+    margin:0;
 }
-
+.topBar{
+    position: relative;
+    border-top:1px solid var(--green);
+    border-bottom:1px solid var(--yellow);
+    background-color: var(--dark);
+}
 h1{
-    font-size: 46px;
-    margin: 20px auto;
-    width: fit-content;
+    font-size: 36px;
+    padding: 20px;
+    text-align: center;
+    margin: 0;
+}
+.newGame{
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: transparent;
+    color: white;
+    border: 1px solid white;
+    font-size: 16px;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: all linear 150ms;
+}
+.newGame:hover{
+    background-color: white;
+    color: var(--green);
 }
 
 .grid-container{
     display: grid;
     place-items: center;
+    margin: 20px 0;
 }
 
 .letter-Box-container{
@@ -64,6 +90,31 @@ h1{
 .wrong{
     background-color: var(--dark);
     animation: animated-Flip-Tile 500ms cubic-bezier(.97,.35,.09,.55) forwards ;
+}
+
+
+#keyboard{
+    display: grid;
+    width: fit-content;
+    margin: 30px auto;
+    place-items: center;
+}
+
+.keyboard-key{
+    display: inline-block;
+    padding: 7px 15px;
+    border-radius: 3px;
+    background-color: #ccc;
+    margin: 2px 2px;
+    font-size: 24px;
+    font-family: 'Belanosima',sans-serif;
+    font-weight: bold;
+    color: var(--background);
+    text-transform: capitalize;
+    text-align: center;
+    min-height: 31px;
+    max-height: 31px;
+    cursor: pointer;
 }
 
 @keyframes animated-Flip-Tile{
