@@ -1,6 +1,7 @@
 let current_row_index = 0
 let current_col_index = 0
 let correctWord = 'tests'
+let inPlay = false
 
 populateTable()
 populateKeyboard()
@@ -35,6 +36,7 @@ async function populateTable() {
         }
         document.getElementById('rootGrid').append(line)
     }
+    inPlay = true
 }
 
 // Function for Entering values
@@ -43,12 +45,13 @@ function input(param) {
 
     let current_row = document.querySelectorAll('.letter-Box-container')[current_row_index]
 
-    if (key.length == 1 && key.match(/[a-z]{1}|[A-Z]{1}/) && current_col_index < 5) {
+    if (key.length == 1 && key.match(/[a-z]{1}|[A-Z]{1}/) && current_col_index < 5 && inPlay) {
         current_row.children[current_col_index].animate({ scale: "1.2" }, { duration: 100 })
         current_row.children[current_col_index].firstChild.textContent = key;
         current_col_index++;
     }
-    else if (key.match('Enter') && current_col_index == 5) {
+    else if (key.match('Enter') && current_col_index == 5 && inPlay) {
+        inPlay = false //can't input keys until  it's set back to true
         console.log("answer submitted")
         let my_word = []
         for (let i = 0; i < 5; i++) {
@@ -60,7 +63,7 @@ function input(param) {
         current_row_index++
         current_col_index = 0;
     }
-    else if ((key.match('Backspace') || key.match('Delete')) && current_col_index > 0) {
+    else if ((key.match('Backspace') || key.match('Delete')) && current_col_index > 0 && inPlay) {
         current_row.children[current_col_index - 1].animate({ scale: "1.05" }, { duration: 100 })
         current_row.children[current_col_index - 1].firstChild.textContent = '';
         current_col_index--;
@@ -96,11 +99,14 @@ function setAnimationTimeout(row, my_word, correctWord, i) {
     // check if the entire word is correct
     if (i == 5) {
         if (correctWord.toUpperCase() == my_word.toUpperCase()) {
+            inPlay = false
             // if the entire word matches then animate all letters
             setTimeout(() => {
                 correctAnswerAnimation(row, 0)
             }, 400);
         } else {
+            inPlay = true
+            // draw a partition of the hangman
             hangAnimate(current_row_index)
         }
         // written with a timeout so it waits for the last letter to finish animation
@@ -118,7 +124,7 @@ function correctAnswerAnimation(row, i) {
             correctAnswerAnimation(row, i + 1)
         }, 100);
     }
-    if(i==5) saveAnimate()
+    if (i == 5) saveAnimate()
 }
 
 // Create Keyboard
@@ -131,7 +137,6 @@ function populateKeyboard() {
         row.classList.add('keyboard-row')
         let x = 0
         i == 0 ? x = 10 : x = 9
-        console.log(x)
         for (let j = 0; j < x; j++) {
             let key = document.createElement("div")
             key.textContent = keys.shift()
@@ -155,7 +160,6 @@ function styleKeys(correctLetters, almostLetters, wrongLetters) {
     document.querySelectorAll('.keyboard-key').forEach(element => {
         let key = element.textContent
         let currentColor = getComputedStyle(element).backgroundColor
-        console.log(currentColor)
         if (wrongL.includes(key)) {
             element.style.backgroundColor = '#252525'
             element.style.color = 'white'
@@ -179,22 +183,23 @@ function styleKeys(correctLetters, almostLetters, wrongLetters) {
 function hangAnimate(part) {
     switch (part) {
         case 1:
-            document.querySelector('.base').style.opacity=1
+            document.querySelector('.base').style.opacity = 1
             break;
         case 2:
-            document.querySelector('.pole').style.opacity=1
+            document.querySelector('.pole').style.opacity = 1
             break;
         case 3:
-            document.querySelector('.rope').style.opacity=1
+            document.querySelector('.rope').style.opacity = 1
             break;
         case 4:
-            document.querySelector('.chair').style.opacity=1
+            document.querySelector('.chair').style.opacity = 1
             break;
         case 5:
-            document.querySelector('.man').style.opacity=1
+            document.querySelector('.man').style.opacity = 1
+            document.querySelector('#stickman').src='dead.svg'
             break;
         case 6:
-            document.querySelector('.chair').style.opacity=0
+            document.querySelector('.chair').style.opacity = 0
             document.querySelector('#stickman').classList.add('deadMan')
             break;
 
@@ -204,17 +209,39 @@ function hangAnimate(part) {
 }
 
 function saveAnimate() {
-    document.querySelector('.base').style.opacity=1
-    document.querySelector('.pole').style.opacity=1
-    document.querySelector('.rope').style.opacity=0
-    document.querySelector('.chair').style.opacity=1
-    document.querySelector('.man').style.opacity=1
-    document.querySelector('#stickman').src='saved.svg'
+    document.querySelector('.base').style.opacity = 1
+    document.querySelector('.pole').style.opacity = 1
+    document.querySelector('.rope').style.opacity = 0
+    document.querySelector('.chair').style.opacity = 1
+    document.querySelector('.man').style.opacity = 1
+    document.querySelector('#stickman').src = 'saved.svg'
     document.querySelector('#stickman').classList.add('savedMan')
 }
 
-// TODO: Add boolean check, inPlay=false if clicked enter and if the answer is correct
-// inPlay=true after clicked enter and checked validity and the answer is wrong or new game
+document.getElementById('startAgain').addEventListener('click',()=>{
+    inPlay=true
+    //hide all animations    
+    document.querySelector('.base').style.opacity = 0
+    document.querySelector('.pole').style.opacity = 0
+    document.querySelector('.rope').style.opacity = 0
+    document.querySelector('.chair').style.opacity = 0
+    document.querySelector('.man').style.opacity = 0
+    document.querySelector('#stickman').classList.remove('deadMan')
+    document.querySelector('#stickman').classList.remove('savedMan')
+    // set All to 0
+    current_row_index = 0
+    current_col_index = 0
+    // Destroy then Recreate
+    document.querySelector('#rootGrid').innerHTML=''
+    document.querySelector('#keyboard').innerHTML=''
+    populateTable()
+    populateKeyboard()
+    eventListenerKeys()
+})
+
+// TODO: Add boolean check, inPlay=false if clicked enter and if the answer is correct ----ADDED
+// inPlay=true after clicked enter and checked validity and the answer is wrong or new game ----ADDED
 // TODO: check if word in dictionary
-// TODO: Add Virtual Keyboard -----Added
-// TODO: Keyboard Highlight colors on keyboard -----Added
+
+// ADD GameOver/WinnerScreen
+// unComment new Word API

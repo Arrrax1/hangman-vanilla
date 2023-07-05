@@ -37,12 +37,10 @@ h1{
     border-radius: 5px;
     padding: 5px 10px;
     cursor: pointer;
-    transition: all linear 150ms;
+    transition: background-color linear 150ms, color linear 150ms;
 }
-.newGame:hover{
-    background-color: white;
-    color: var(--green);
-}
+.newGame:hover{background-color:white;color:var(--green);}
+.newGame:active{scale:0.95;}
 
 .grid-container{
     display: grid;
