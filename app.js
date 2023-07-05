@@ -4,7 +4,7 @@ let correctWord = 'tests'
 
 populateTable()
 populateKeyboard()
-initKeys()
+eventListenerKeys()
 
 document.addEventListener('keydown', (event) => {
     input(event.key)
@@ -73,18 +73,22 @@ function checkAnswer(my_word, row) {
     // idk why I called a function just to call another function inside 
     setAnimationTimeout(row, my_word, correctWord, 0)
 }
-
+let correctL=[]
+let almostL=[]
+let wrongL=[]
 // Loop with Delay
 function setAnimationTimeout(row, my_word, correctWord, i) {
     if (i < 5) {
         setTimeout(() => {
             if (row.children[i].firstChild.textContent.toUpperCase() == correctWord[i].toUpperCase()) {
                 row.children[i].classList.add('correct')
-                console.log("first")
+                correctL.push(row.children[i].firstChild.textContent)
             } else if (correctWord.toUpperCase().match(row.children[i].firstChild.textContent.toUpperCase())) {
                 row.children[i].classList.add('almost')
+                almostL.push(row.children[i].firstChild.textContent)
             } else {
                 row.children[i].classList.add('wrong')
+                wrongL.push(row.children[i].firstChild.textContent)
             }
             setAnimationTimeout(row, my_word, correctWord, i + 1)
         }, 700);
@@ -97,6 +101,10 @@ function setAnimationTimeout(row, my_word, correctWord, i) {
                 correctAnswerAnimation(row, 0)
             }, 400);
         }
+        // written with a timeout so it waits for the last letter to finish animation
+        setTimeout(() => {
+            styleKeys(correctL,almostL,wrongL)
+        }, 700);
     }
 }
 
@@ -132,7 +140,7 @@ function populateKeyboard() {
 }
 
 // Virtual Keyboard Keys
-function initKeys() {
+function eventListenerKeys() {
     document.querySelectorAll('.keyboard-key').forEach(element => {
         element.addEventListener('click', () => {
             input(element.textContent)
@@ -140,8 +148,31 @@ function initKeys() {
     });
 }
 
+function styleKeys(correctLetters,almostLetters,wrongLetters){
+    document.querySelectorAll('.keyboard-key').forEach(element => {
+        let key = element.textContent
+        let currentColor = getComputedStyle(element).backgroundColor
+        console.log(currentColor)
+        if (wrongL.includes(key)) {
+            element.style.backgroundColor = '#252525'
+            element.style.color = 'white'
+        }
+        if (almostL.includes(key) && currentColor=='rgb(245, 245, 245)'){
+            element.style.backgroundColor = '#b59f3b'
+            element.style.color = 'white'
+        }
+        if (correctL.includes(key)){
+            element.style.backgroundColor = '#538d4e'
+            element.style.color = 'white'
+        }
+    });
+    correctL=[]
+    almostL=[]
+    wrongL=[]
+}
+
 // TODO: Add boolean check, inPlay=false if clicked enter and if the answer is correct
 // inPlay=true after clicked enter and checked validity and the answer is wrong or new game
 // TODO: check if word in dictionary
-// TODO: Add Virtual Keyboard
-// TODO: Keyboard Highlight colors on keyboard
+// TODO: Add Virtual Keyboard -----Added
+// TODO: Keyboard Highlight colors on keyboard -----Added
