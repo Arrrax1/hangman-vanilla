@@ -36,7 +36,6 @@ async function populateTable() {
         }
         document.getElementById('rootGrid').append(line)
     }
-    inPlay = true
 }
 
 // Function for Entering values
@@ -145,6 +144,7 @@ function populateKeyboard() {
         }
         keyboard.append(row)
     }
+    inPlay = true
 }
 
 // Virtual Keyboard Keys
@@ -196,14 +196,29 @@ function hangAnimate(part) {
             break;
         case 5:
             document.querySelector('.man').style.opacity = 1
-            document.querySelector('#stickman').src='dead.svg'
+            document.querySelector('#stickman').src = 'dead.svg'
             break;
         case 6:
             document.querySelector('.chair').style.opacity = 0
             document.querySelector('#stickman').classList.add('deadMan')
+            setTimeout(() => {
+                document.querySelector('body').style.transform = 'rotate(2deg)'
+            }, 70);
+            setTimeout(() => {
+                document.querySelector('body').style.transform = 'rotate(-2deg)'
+            }, 140);
+            setTimeout(() => {
+                document.querySelector('body').style.transform = 'rotate(2deg)'
+            }, 210);
+            setTimeout(() => {
+                document.querySelector('body').style.transform = 'rotate(0deg)'
+            }, 280);
+            document.querySelector('.gameOverContainer').style.display = 'grid'
+            document.querySelector('#message').textContent = "You lost!, the word was '" + correctWord.toUpperCase() + "!'💀"
             break;
 
         default:
+            console.log('error')
             break;
     }
 }
@@ -216,10 +231,14 @@ function saveAnimate() {
     document.querySelector('.man').style.opacity = 1
     document.querySelector('#stickman').src = 'saved.svg'
     document.querySelector('#stickman').classList.add('savedMan')
+    document.querySelector('.gameOverContainer').style.display = 'grid'
+    document.querySelector('#message').textContent = "You won!, the word was '" + correctWord.toUpperCase() + "!'🎉"
 }
 
-document.getElementById('startAgain').addEventListener('click',()=>{
-    inPlay=true
+document.getElementById('startAgain').addEventListener('click', async () => {
+    document.getElementById('loading').style.display = 'grid'
+    // document.querySelector('.gameOverContainer').style.display = 'none'
+    inPlay = false
     //hide all animations    
     document.querySelector('.base').style.opacity = 0
     document.querySelector('.pole').style.opacity = 0
@@ -232,11 +251,18 @@ document.getElementById('startAgain').addEventListener('click',()=>{
     current_row_index = 0
     current_col_index = 0
     // Destroy then Recreate
-    document.querySelector('#rootGrid').innerHTML=''
-    document.querySelector('#keyboard').innerHTML=''
-    populateTable()
-    populateKeyboard()
-    eventListenerKeys()
+    document.querySelector('#rootGrid').innerHTML = ''
+    document.querySelector('#keyboard').innerHTML = ''
+    setTimeout(() => {
+        populateTable()
+        populateKeyboard()
+        eventListenerKeys()
+        document.getElementById('loading').style.display = 'none'
+    }, 3000);
+})
+
+document.getElementById('closeEndgame').addEventListener('click', () => {
+    document.querySelector('.gameOverContainer').style.display = 'none'
 })
 
 // TODO: Add boolean check, inPlay=false if clicked enter and if the answer is correct ----ADDED
@@ -244,4 +270,19 @@ document.getElementById('startAgain').addEventListener('click',()=>{
 // TODO: check if word in dictionary
 
 // ADD GameOver/WinnerScreen
+// you Lost, the word was " "/ You Won, the word was " "/ --Close--
 // unComment new Word API
+
+// while (true) {
+//     switch (inPlay) {
+//         case false:
+//             document.getElementById('startAgain').disabled = true;
+//             break;
+
+//         case true:
+//             document.getElementById('startAgain').disabled = false;
+//             break;
+//         default:
+//             break;
+//     }
+// }
