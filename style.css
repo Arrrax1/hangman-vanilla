@@ -248,12 +248,13 @@ section {
     left: 0;
     width: 100%;
     background-color: #7a7a7a9c;
-    display: grid;
+    display: none;
     place-content: center;
     align-content: center;
 }
 
 .gameOver {
+    margin-top: 400px;
     padding: 40px 40px;
     background-color: rgb(240, 240, 240);
     font-size: 22px;
@@ -261,6 +262,9 @@ section {
     color: #333;
     border: 3px solid goldenrod;
     border-radius: 3px;
+    transition: all 500ms ease;
+    scale: 0.8;
+    opacity: 0.5;
 }
 
 #closeEndgame {

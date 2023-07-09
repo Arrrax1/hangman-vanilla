@@ -58,9 +58,12 @@ function input(param) {
         }
         my_word = my_word.join('').toUpperCase()
         console.log(my_word)
-        checkAnswer(my_word, current_row)
+        for (let i = 1; i < 6; i++) {
+            setAnimationTimeout(current_row, my_word, correctWord, i)
+        }
         current_row_index++
         current_col_index = 0;
+
     }
     else if ((key.match('Backspace') || key.match('Delete')) && current_col_index > 0 && inPlay) {
         current_row.children[current_col_index - 1].animate({ scale: "1.05" }, { duration: 100 })
@@ -71,59 +74,52 @@ function input(param) {
 
 //Func to check answer
 // Checks answer on Enter press 
-function checkAnswer(my_word, row) {
-    // idk why I called a function just to call another function inside 
-    setAnimationTimeout(row, my_word, correctWord, 0)
-}
 let correctL = []
 let almostL = []
 let wrongL = []
 // Loop with Delay
 function setAnimationTimeout(row, my_word, correctWord, i) {
-    if (i < 5) {
+    if (i < 6) {
         setTimeout(() => {
-            if (row.children[i].firstChild.textContent.toUpperCase() == correctWord[i].toUpperCase()) {
-                row.children[i].classList.add('correct')
-                correctL.push(row.children[i].firstChild.textContent)
-            } else if (correctWord.toUpperCase().match(row.children[i].firstChild.textContent.toUpperCase())) {
-                row.children[i].classList.add('almost')
-                almostL.push(row.children[i].firstChild.textContent)
+            if (row.children[i - 1].firstChild.textContent.toUpperCase() == correctWord[i - 1].toUpperCase()) {
+                row.children[i - 1].classList.add('correct')
+                correctL.push(row.children[i - 1].firstChild.textContent)
+            } else if (correctWord.toUpperCase().match(row.children[i - 1].firstChild.textContent.toUpperCase())) {
+                row.children[i - 1].classList.add('almost')
+                almostL.push(row.children[i - 1].firstChild.textContent)
             } else {
-                row.children[i].classList.add('wrong')
-                wrongL.push(row.children[i].firstChild.textContent)
+                row.children[i - 1].classList.add('wrong')
+                wrongL.push(row.children[i - 1].firstChild.textContent)
             }
-            setAnimationTimeout(row, my_word, correctWord, i + 1)
-        }, 700);
+        }, 700 * i);
     }
     // check if the entire word is correct
     if (i == 5) {
-        if (correctWord.toUpperCase() == my_word.toUpperCase()) {
-            inPlay = false
-            // if the entire word matches then animate all letters
-            setTimeout(() => {
-                correctAnswerAnimation(row, 0)
-            }, 400);
-        } else {
-            inPlay = true
-            // draw a partition of the hangman
-            hangAnimate(current_row_index)
-        }
-        // written with a timeout so it waits for the last letter to finish animation
         setTimeout(() => {
+            if (correctWord.toUpperCase() == my_word.toUpperCase()) {
+                inPlay = false
+                // if the entire word matches then animate all letters
+                for (let j = 1; j < 6; j++) {
+                    correctAnswerAnimation(row, j)
+                }
+            } else {
+                inPlay = true
+                // draw a partition of the hangman
+                hangAnimate(current_row_index)
+            }
+            // written with a timeout so it waits for the last letter to finish animation
             styleKeys(correctL, almostL, wrongL)
-        }, 700);
+        }, 4000);
     }
 }
 
 function correctAnswerAnimation(row, i) {
-    // recursion again to animate all letters
-    if (i < 5) {
+    if (i < 6) {
         setTimeout(() => {
-            row.children[i].animate({ scale: "1.3" }, { duration: 200, easing: "ease" })
-            correctAnswerAnimation(row, i + 1)
-        }, 100);
+            row.children[i - 1].animate({ scale: "1.3" }, { duration: 200, easing: "ease" })
+        }, 100 * i);
     }
-    if (i == 5) saveAnimate()
+    if (i == 5) setTimeout(() => { saveAnimate() }, 800);
 }
 
 // Create Keyboard
@@ -201,24 +197,20 @@ function hangAnimate(part) {
         case 6:
             document.querySelector('.chair').style.opacity = 0
             document.querySelector('#stickman').classList.add('deadMan')
-            setTimeout(() => {
-                document.querySelector('body').style.transform = 'rotate(2deg)'
-            }, 70);
-            setTimeout(() => {
-                document.querySelector('body').style.transform = 'rotate(-2deg)'
-            }, 140);
-            setTimeout(() => {
-                document.querySelector('body').style.transform = 'rotate(2deg)'
-            }, 210);
-            setTimeout(() => {
-                document.querySelector('body').style.transform = 'rotate(0deg)'
-            }, 280);
+            for (let i = 1; i < 5; i++) {
+                setTimeout(() => {
+                    let deg = 2
+                    i % 2 === 0 ? deg = -deg : deg = deg
+                    document.querySelector('body').style.transform = `rotate(${deg}deg)`
+                    i === 4 && (document.querySelector('body').style.transform = 'rotate(0deg)')
+                }, 70 * i);
+            }
             document.querySelector('.gameOverContainer').style.display = 'grid'
             document.querySelector('#message').textContent = "You lost!, the word was '" + correctWord.toUpperCase() + "!'💀"
             break;
 
         default:
-            console.log('error')
+            console.log('Error')
             break;
     }
 }
@@ -231,7 +223,16 @@ function saveAnimate() {
     document.querySelector('.man').style.opacity = 1
     document.querySelector('#stickman').src = 'saved.svg'
     document.querySelector('#stickman').classList.add('savedMan')
-    document.querySelector('.gameOverContainer').style.display = 'grid'
+    // timeout so that the animation shows up before pop out window
+    setTimeout(() => {
+        document.querySelector('.gameOverContainer').style.display = 'grid'
+        setTimeout(() => {
+            document.querySelector('.gameOver').style.marginTop = '0'
+            document.querySelector('.gameOver').style.scale = '1'
+            document.querySelector('.gameOver').style.opacity = '1'
+        }, 10);
+
+    }, 500);
     document.querySelector('#message').textContent = "You won!, the word was '" + correctWord.toUpperCase() + "!'🎉"
 }
 
