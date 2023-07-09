@@ -20,7 +20,7 @@ async function populateTable() {
         const result = await response.text();
         correctWord = result.split('"')[1];
         correctWord = correctWord.toUpperCase();
-        console.log(correctWord);
+        // console.log(correctWord);
     } catch (error) {
         console.error(error);
     }
@@ -55,7 +55,7 @@ async function input(param) {
     else if (key.match('Enter') && current_col_index == 5 && inPlay) {
         inPlay = false //can't input keys until  it's set back to true
         document.getElementById('startAgain').disabled = true; //can't click new game until animation is done
-        console.log("answer submitted")
+        // console.log("answer submitted")
         let my_word = []
         for (let i = 0; i < 5; i++) {
             my_word.push(current_row.children[i].firstChild.textContent)
@@ -72,6 +72,7 @@ async function input(param) {
                 current_row_index++
                 current_col_index = 0;
             } else {
+                invalidWord()
                 inPlay = true
                 document.getElementById('startAgain').disabled = false;
             }
@@ -285,7 +286,14 @@ document.getElementById('startAgain').addEventListener('click', () => {
 document.getElementById('closeEndgame').addEventListener('click', () => {
     document.querySelector('.gameOverContainer').style.display = 'none'
 })
-
-// TODO: check if word in dictionary
-
-// unComment new Word API
+function invalidWord() {
+    document.getElementById('validWord').style.display= 'block'
+    setTimeout(() => {
+        document.getElementById('validWord').style.top= '30%'
+        document.getElementById('validWord').style.opacity= '1'
+    }, 10);
+    setTimeout(() => {
+        document.getElementById('validWord').style.top= '70%'
+        document.getElementById('validWord').style.opacity= '0'
+    }, 1000);
+}
