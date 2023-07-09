@@ -1,6 +1,6 @@
 let current_row_index = 0
 let current_col_index = 0
-let correctWord = 'tests'
+let correctWord = ''
 let inPlay = false
 
 populateTable()
@@ -14,15 +14,16 @@ document.addEventListener('keydown', (event) => {
 
 
 async function populateTable() {
-    // try {
-    //     const response = await fetch('https://random-word-api.herokuapp.com/word?length=5&lang=en');
-    //     const result = await response.text();
-    //     correctWord = result.split('"')[1];
-    //     correctWord = correctWord.toUpperCase();
-    //     console.log(correctWord);
-    // } catch (error) {
-    //     console.error(error);
-    // }
+    document.getElementById('startAgain').disabled = true; //can't click new game until request is done
+    try {
+        const response = await fetch('https://random-word-api.herokuapp.com/word?length=5&lang=en');
+        const result = await response.text();
+        correctWord = result.split('"')[1];
+        correctWord = correctWord.toUpperCase();
+        console.log(correctWord);
+    } catch (error) {
+        console.error(error);
+    }
     for (let i = 0; i < 6; i++) {
         let line = document.createElement('div')
         line.classList.add('letter-Box-container')
@@ -36,6 +37,8 @@ async function populateTable() {
         }
         document.getElementById('rootGrid').append(line)
     }
+    document.getElementById('startAgain').disabled = false;
+    document.getElementById('loading').style.display = 'none'
 }
 
 // Function for Entering values
@@ -51,6 +54,7 @@ function input(param) {
     }
     else if (key.match('Enter') && current_col_index == 5 && inPlay) {
         inPlay = false //can't input keys until  it's set back to true
+        document.getElementById('startAgain').disabled = true; //can't click new game until animation is done
         console.log("answer submitted")
         let my_word = []
         for (let i = 0; i < 5; i++) {
@@ -109,6 +113,7 @@ function setAnimationTimeout(row, my_word, correctWord, i) {
             }
             // written with a timeout so it waits for the last letter to finish animation
             styleKeys(correctL, almostL, wrongL)
+            document.getElementById('startAgain').disabled = false;
         }, 4000);
     }
 }
@@ -205,7 +210,14 @@ function hangAnimate(part) {
                     i === 4 && (document.querySelector('body').style.transform = 'rotate(0deg)')
                 }, 70 * i);
             }
-            document.querySelector('.gameOverContainer').style.display = 'grid'
+            setTimeout(() => {
+                document.querySelector('.gameOverContainer').style.display = 'grid'
+                setTimeout(() => {
+                    document.querySelector('.gameOver').style.marginTop = '0'
+                    document.querySelector('.gameOver').style.scale = '1'
+                    document.querySelector('.gameOver').style.opacity = '1'
+                }, 10);
+            }, 500);
             document.querySelector('#message').textContent = "You lost!, the word was '" + correctWord.toUpperCase() + "!'💀"
             break;
 
@@ -236,7 +248,7 @@ function saveAnimate() {
     document.querySelector('#message').textContent = "You won!, the word was '" + correctWord.toUpperCase() + "!'🎉"
 }
 
-document.getElementById('startAgain').addEventListener('click', async () => {
+document.getElementById('startAgain').addEventListener('click', () => {
     document.getElementById('loading').style.display = 'grid'
     // document.querySelector('.gameOverContainer').style.display = 'none'
     inPlay = false
@@ -254,36 +266,15 @@ document.getElementById('startAgain').addEventListener('click', async () => {
     // Destroy then Recreate
     document.querySelector('#rootGrid').innerHTML = ''
     document.querySelector('#keyboard').innerHTML = ''
-    setTimeout(() => {
-        populateTable()
-        populateKeyboard()
-        eventListenerKeys()
-        document.getElementById('loading').style.display = 'none'
-    }, 3000);
+    populateTable()
+    populateKeyboard()
+    eventListenerKeys()
 })
 
 document.getElementById('closeEndgame').addEventListener('click', () => {
     document.querySelector('.gameOverContainer').style.display = 'none'
 })
 
-// TODO: Add boolean check, inPlay=false if clicked enter and if the answer is correct ----ADDED
-// inPlay=true after clicked enter and checked validity and the answer is wrong or new game ----ADDED
 // TODO: check if word in dictionary
 
-// ADD GameOver/WinnerScreen
-// you Lost, the word was " "/ You Won, the word was " "/ --Close--
 // unComment new Word API
-
-// while (true) {
-//     switch (inPlay) {
-//         case false:
-//             document.getElementById('startAgain').disabled = true;
-//             break;
-
-//         case true:
-//             document.getElementById('startAgain').disabled = false;
-//             break;
-//         default:
-//             break;
-//     }
-// }

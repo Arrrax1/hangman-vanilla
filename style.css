@@ -53,7 +53,7 @@ h1 {
 #closeEndgame:active {
     scale: 0.95;
 }
-
+.newGame:disabled,.newGame:disabled:hover{background-color:#555555;color:whitesmoke}
 .grid-container {
     display: grid;
     place-items: center;
