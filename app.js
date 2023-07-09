@@ -42,7 +42,7 @@ async function populateTable() {
 }
 
 // Function for Entering values
-function input(param) {
+async function input(param) {
     let key = param                //Letters Key Value
 
     let current_row = document.querySelectorAll('.letter-Box-container')[current_row_index]
@@ -61,12 +61,23 @@ function input(param) {
             my_word.push(current_row.children[i].firstChild.textContent)
         }
         my_word = my_word.join('').toUpperCase()
-        console.log(my_word)
-        for (let i = 1; i < 6; i++) {
-            setAnimationTimeout(current_row, my_word, correctWord, i)
+        try {
+            //checking the word validity just by the status code
+            let res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${my_word}`)
+            let validity = res.status
+            if (validity === 200) {
+                for (let i = 1; i < 6; i++) {
+                    setAnimationTimeout(current_row, my_word, correctWord, i)
+                }
+                current_row_index++
+                current_col_index = 0;
+            } else {
+                inPlay = true
+                document.getElementById('startAgain').disabled = false;
+            }
+        } catch (error) {
+            console.log(error)
         }
-        current_row_index++
-        current_col_index = 0;
 
     }
     else if ((key.match('Backspace') || key.match('Delete')) && current_col_index > 0 && inPlay) {
